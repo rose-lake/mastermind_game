@@ -24,23 +24,28 @@ class Game:
     def check_move(self, move):
         # move is a list of 4 characters :: R | O | Y | G | B | P
         # returns a list of UP TO 4 characters :: B for exact match | W for inexact match
+
+        temp_secret = self.sequence.copy()
+        exact_match_colors = []
+
         for index, color in enumerate(move):
-            print('** checking color ' + color)
-            if color in self.sequence:
-                print('** color ' + color + ' in sequence')
-                if color == self.sequence[index]:
+
+            if color in temp_secret:
+                if color == temp_secret[index]:
                     self.exact_match += 1
-                    print('** exact match on index ' + str(index))
-                else:
-                    self.inexact_match += 1
-                    print('** inexact match')
+                    exact_match_colors.append(color)
+        [temp_secret.remove(color) for color in exact_match_colors]
+        [move.remove(color) for color in exact_match_colors]
+
+        # by this point, all exact matches are removed from both temp_secret and move
+        # now, check for inexact matches.
+        for color in move:
+            if color in temp_secret:
+                self.inexact_match += 1
+                temp_secret.remove(color)
         
-        check_result = f'{ "B" * self.exact_match }{"W" * self.inexact_match}'
-
-        # check_result.append('B' * exact_match)        
+        check_result = f'You have {self.exact_match} exact matches, and {self.inexact_match} inexact matches!'
         print(check_result)
-
-        # return check_result
 
     def has_won(self):
         if self.exact_match is 4:
@@ -56,7 +61,7 @@ class Game:
 
         while guess_is_not_valid:
             move = input('What is your guess? (Select 4 colors, R | O | Y | G | B | P, separated by spaces):\n')
-            move_list = move.upper().split(' ')
+            move_list = move.upper().strip().split(' ')
             if len(move_list) is 4:
                 self.turn += 1
                 guess_is_not_valid = False
@@ -64,13 +69,15 @@ class Game:
         self.check_move(move_list)
 
     def run_game(self):
-        print(self.sequence)
-
+        # for game testing purposes!!
+        # print(self.sequence)
+        print('Welcome to MASTERMIND! Created by Sara and Ksenia :)')
         while True:
             self.take_move()
             if self.has_won():
                 print('Congratulations! You won!')
                 break
             if self.turn is self.MAX_TURNS:
-                print(f'Sorry, game over. The correct sequence was {self.sequence}')
+                print(f'Sorry, game over. The correct sequence was {" ".join(self.sequence)}')
                 break
+            print(f'You have {(self.MAX_TURNS - self.turn)} moves left!')
