@@ -1,5 +1,4 @@
-
-from game_setup import Game
+from game import Game
 
 def main():
     game = Game()

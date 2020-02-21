@@ -2,7 +2,7 @@ import random
 
 class Game:
 
-    MAX_TURNS = 1
+    MAX_TURNS = 10
     COLOR_CODES = {
         'R': '\u001b[41m',
         'O': '\u001b[101m',
@@ -29,7 +29,7 @@ class Game:
         while len(sequence) < 4:
             color_index = random.randint(0, 5)
             sequence.append(colors[color_index])
-        
+
         return sequence
 
     def check_move(self, move):
@@ -54,7 +54,7 @@ class Game:
             if color in temp_secret:
                 self.inexact_match += 1
                 temp_secret.remove(color)
-        
+
         check_result = f'You have {self.exact_match} exact matches, and {self.inexact_match} inexact matches!'
         print(check_result)
 
@@ -104,7 +104,8 @@ class Game:
         while True:
             self.take_move()
             if self.has_won():
-                print('Congratulations! You won!')
+                print('Congratulations! You won! '
+                      + f'{self.display_final_sequence()} !')
                 break
             if self.turn is self.MAX_TURNS:
                 print(f'Sorry, game over. The correct sequence was {self.display_final_sequence()}')
