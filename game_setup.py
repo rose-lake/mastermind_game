@@ -2,7 +2,18 @@ import random
 
 class Game:
 
-    MAX_TURNS = 10
+    MAX_TURNS = 1
+    COLOR_CODES = {
+        'R': '\u001b[41m',
+        'O': '\u001b[101m',
+        'Y': '\u001b[103m',
+        'G': '\u001b[42m',
+        'B': '\u001b[44m',
+        'P': '\u001b[105m',
+    }
+    TEXT_RESET = '\u001b[0m'
+    UNICODE_BOX = '\u2588'
+    BLACK_TEXT = '\u001b[30m'
 
     def __init__(self):
         self.sequence = self.generate_secret()
@@ -60,13 +71,31 @@ class Game:
         guess_is_not_valid = True
 
         while guess_is_not_valid:
-            move = input('What is your guess? (Select 4 colors, R | O | Y | G | B | P, separated by spaces):\n')
+            move = input('What is your guess? (Select 4 colors, '
+                            + f'{self.COLOR_CODES["R"]}{self.BLACK_TEXT}R{self.TEXT_RESET}'
+                            + ' | '
+                            + f'{self.COLOR_CODES["O"]}{self.BLACK_TEXT}O{self.TEXT_RESET}'
+                            + ' | '
+                            + f'{self.COLOR_CODES["Y"]}{self.BLACK_TEXT}Y{self.TEXT_RESET}'
+                            + ' | '
+                            + f'{self.COLOR_CODES["G"]}{self.BLACK_TEXT}G{self.TEXT_RESET}'
+                            + ' | '
+                            + f'{self.COLOR_CODES["B"]}{self.BLACK_TEXT}B{self.TEXT_RESET}'
+                            + ' | '
+                            + f'{self.COLOR_CODES["P"]}{self.BLACK_TEXT}P{self.TEXT_RESET}'
+                            + ', separated by spaces):\n')
             move_list = move.upper().strip().split(' ')
             if len(move_list) is 4:
                 self.turn += 1
                 guess_is_not_valid = False
 
         self.check_move(move_list)
+
+    def display_final_sequence(self):
+        render_string = ''
+        for color in self.sequence:
+            render_string += f'{self.COLOR_CODES[color]}{self.BLACK_TEXT}{color}{self.TEXT_RESET} '
+        return f'{render_string}'
 
     def run_game(self):
         # for game testing purposes!!
@@ -78,6 +107,6 @@ class Game:
                 print('Congratulations! You won!')
                 break
             if self.turn is self.MAX_TURNS:
-                print(f'Sorry, game over. The correct sequence was {" ".join(self.sequence)}')
+                print(f'Sorry, game over. The correct sequence was {self.display_final_sequence()}')
                 break
             print(f'You have {(self.MAX_TURNS - self.turn)} moves left!')
